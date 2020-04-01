@@ -3,6 +3,7 @@ class Scene2 extends Phaser.Scene {
 		super("GamePlay");
 	}
 	create(){
+		gameSetting.playerJump = 1;
 		this.add.text(20, 20, "Play Game", {font: "25px Arial", fill: "yellow"});
 
 		this.background = this.add.tileSprite(0, 0, config.width,config.height, "space"); 
@@ -14,24 +15,31 @@ class Scene2 extends Phaser.Scene {
   //      this.platforms.create(200, 350, 'block2');
 
         this.tests = this.physics.add.group();
-        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),550, "asd").setImmovable();
-        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),350, "asd").setImmovable();
-        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),150, "asd").setImmovable();
-
+        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),350, "asd").setImmovable().setScale(2);
+        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),200, "asd").setImmovable().setScale(2);
+        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),50, "asd").setImmovable().setScale(2);
 
 
 		//this.test2 = this.physics.add.sprite(200,200, "block4").setImmovable();
 
-		this.player = this.physics.add.sprite(config.width/2 - 50, config.height - 50, "player").setBounce(0);
+		this.piso = this.physics.add.sprite(200,520, "asd").setScale(8).setImmovable();
+
+		this.player = this.physics.add.sprite(config.width/2 - 50, config.height - 20, "player").setBounce(0);
 		this.player.setGravityY(500);
 
 		this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 		this.cursorKeys = this.input.keyboard.createCursorKeys();   
 
+        this.scoreText = this.add.text(16,16, 'Score: 0');
+		this.physics.add.collider(this.player, this.piso);
 		this.physics.add.overlap(this.player, this.tests,test,null,this);
 			function test(player, test){
 				if(player.body.touching.down){
-				var asd = this.physics.add.collider(player, test);
+				this.physics.add.collider(player, test);
+					if (gameSetting.playerJump == 2){
+						gameSetting.score +=1;
+	        			this.scoreText.setText('Score: ' + gameSetting.score);
+        			}
 				gameSetting.playerJump = 1;
 				}
 			}
@@ -49,6 +57,7 @@ moveShip(ship, speed){
 	}
 
 	update(){
+    this.physics.world.wrap(this.player, 5);
 
  
 
@@ -56,18 +65,30 @@ moveShip(ship, speed){
 	if(gameSetting.playerJump == 2){
 	this.background.tilePositionY -= 1;
 	Phaser.Actions.Call(this.tests.getChildren(), function(go) {
-	 go.y +=2;
+	 go.y +=gameSetting.pisoSpeed;
 	 if (go.y > 500){
-	 	go.y = -50;
+	 	go.y = 50;
+	 		if (gameSetting.score > 5 && gameSetting.score < 20){
+		 		go.setScale(1);
+		 		gameSetting.pisoSpeed = 3;
+	 		}else if (gameSetting.score > 20 ){
+		 		go.setScale(0.5);
+	 		}
 	 	go.x = Phaser.Math.Between(20, config.width - 20);
 	  }
 })
 }
 
 	if(Phaser.Input.Keyboard.JustDown(this.spacebar)){
+			if(this.piso){
+				this.piso.destroy();
+			}
 		gameSetting.playerJump = 2;
 		this.player.setVelocityY(-300);
 		
+	}
+	if (this.player.y > 500){
+   				this.scene.start("bootGame");
 	}
 	}
 
