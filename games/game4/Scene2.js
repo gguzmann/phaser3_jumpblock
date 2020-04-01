@@ -49,7 +49,6 @@ moveShip(ship, speed){
 	}
 
 	update(){
-    this.physics.world.wrap(this.player, 5);
 
  
 
