@@ -1,6 +1,7 @@
 var gameSetting = {
 	playerSpeed: 200,
-	enemySpeed: 1,
+	pisoSpeed: 2,
+	score: 0,
 	playerJump: 1
 }
 var config = {
