@@ -17,9 +17,9 @@ class Scene2 extends Phaser.Scene {
   //      this.platforms.create(200, 350, 'block2');
 
         this.tests = this.physics.add.group();
-        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),350, "asd").setImmovable().setScale(2);
-        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),200, "asd").setImmovable().setScale(2);
-        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),50, "asd").setImmovable().setScale(2);
+        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),300, "asd").setImmovable().setScale(2);
+        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),100, "asd").setImmovable().setScale(2);
+        this.test = this.tests.create(Phaser.Math.Between(20, config.width - 20),-100, "asd").setImmovable().setScale(2);
 
 
 		//this.test2 = this.physics.add.sprite(200,200, "block4").setImmovable();
@@ -62,7 +62,7 @@ moveShip(ship, speed){
 	Phaser.Actions.Call(this.tests.getChildren(), function(go) {
 	 go.y +=gameSetting.pisoSpeed;
 	 if (go.y > 500){
-	 	go.y = 50;
+	 	go.y = -100;
 	 	gameSetting.score +=1;
 	 		if (gameSetting.score > 5 && gameSetting.score < 20){
 		 		go.setScale(1);
@@ -81,7 +81,7 @@ moveShip(ship, speed){
 			}
 		gameSetting.playerJump = 2;
 		gameSetting.spaceMoved = 2;
-		this.player.setVelocityY(-300);
+		this.player.setVelocityY(-350);
 		
 	}
 	if (this.player.y > 500){
