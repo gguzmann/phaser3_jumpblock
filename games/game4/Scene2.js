@@ -37,8 +37,10 @@ class Scene2 extends Phaser.Scene {
 		this.physics.add.collider(this.player, this.piso);
 		this.physics.add.collider(this.player, this.tests,test,null,this);
 			function test(player, test){
+				if(player.body.touching.down){
 					this.player.y +=2;
 					gameSetting.playerJump = 1;
+				}
 				}
 			
 
