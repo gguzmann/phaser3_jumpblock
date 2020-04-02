@@ -4,6 +4,8 @@ class Scene2 extends Phaser.Scene {
 	}
 	create(){
 		gameSetting.playerJump = 1;
+		gameSetting.spaceMoved = 1;
+		gameSetting.score = 0;
 		this.add.text(20, 20, "Play Game", {font: "25px Arial", fill: "yellow"});
 
 		this.background = this.add.tileSprite(0, 0, config.width,config.height, "space"); 
@@ -26,25 +28,19 @@ class Scene2 extends Phaser.Scene {
 
 		this.player = this.physics.add.sprite(config.width/2 - 50, config.height - 20, "player").setBounce(0);
 		this.player.setGravityY(500);
+			this.player.setVelocityX(0);
 
 		this.spacebar = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 		this.cursorKeys = this.input.keyboard.createCursorKeys();   
 
         this.scoreText = this.add.text(16,16, 'Score: 0');
 		this.physics.add.collider(this.player, this.piso);
-		this.physics.add.overlap(this.player, this.tests,test,null,this);
+		this.physics.add.collider(this.player, this.tests,test,null,this);
 			function test(player, test){
-				if(player.body.touching.down){
-				this.physics.add.collider(player, test);
-					if (gameSetting.playerJump == 2){
-						gameSetting.score +=1;
-	        			this.scoreText.setText('Score: ' + gameSetting.score);
-        			}
-				gameSetting.playerJump = 1;
+					this.player.y +=2;
+					gameSetting.playerJump = 1;
 				}
-			}
-
-	
+			
 
 
 
@@ -57,20 +53,20 @@ moveShip(ship, speed){
 	}
 
 	update(){
-    this.physics.world.wrap(this.player, 5);
-
- 
-
+    this.physics.world.wrap(this.player, 10);
 	this.movePlayer();
-	if(gameSetting.playerJump == 2){
+
+	if(gameSetting.spaceMoved == 2){
 	this.background.tilePositionY -= 1;
+	        			this.scoreText.setText('Score: ' + gameSetting.score);
 	Phaser.Actions.Call(this.tests.getChildren(), function(go) {
 	 go.y +=gameSetting.pisoSpeed;
 	 if (go.y > 500){
 	 	go.y = 50;
+	 	gameSetting.score +=1;
 	 		if (gameSetting.score > 5 && gameSetting.score < 20){
 		 		go.setScale(1);
-		 		gameSetting.pisoSpeed = 3;
+		 		gameSetting.pisoSpeed = 2;
 	 		}else if (gameSetting.score > 20 ){
 		 		go.setScale(0.5);
 	 		}
@@ -79,16 +75,17 @@ moveShip(ship, speed){
 })
 }
 
-	if(Phaser.Input.Keyboard.JustDown(this.spacebar)){
+	if(Phaser.Input.Keyboard.JustDown(this.spacebar) && gameSetting.playerJump == 1 && this.player.body.touching.down){
 			if(this.piso){
 				this.piso.destroy();
 			}
 		gameSetting.playerJump = 2;
+		gameSetting.spaceMoved = 2;
 		this.player.setVelocityY(-300);
 		
 	}
 	if (this.player.y > 500){
-   				this.scene.start("bootGame");
+		this.scene.restart();
 	}
 	}
 
